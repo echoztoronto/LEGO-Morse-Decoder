@@ -18,12 +18,12 @@ _TIMER1InterruptInit:
 	
 		movia r16, TIMER1
 		
-		#Set lower 4 bits for time
+		#Set lower 16 bits for time
 		movia r17, 0xFFFF #Mask for lower 16 bits
 		and r17, r4, r17
 		stwio r17, 8(r16)
 		
-		#Set upper 4 bits for time
+		#Set upper 16 bits for time
 		movia r17, 0xFFFF0000 #Mask for upper 16 bits
 		and r17, r4, r17
 		srli r17, r17, 16

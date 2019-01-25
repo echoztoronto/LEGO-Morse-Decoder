@@ -6,14 +6,22 @@
 		#Timer 2 related
 		
 		#Motor related
-			.equ Duty_On_Cycles, 4000000
-			.equ Duty_Off_Cycles, 100000000
-			.equ Direction, 0 #or 0
+			.equ Duty_On_Cycles, 50000000
+			.equ Duty_Off_Cycles, 50000000
+			.equ Direction, 1 #or 0
 		
 		#Sensor related
-			.equ Sensor_Threshold, 0xa0
+			.equ Sensor_Threshold, 0x8
+			.equ Timing_Sensor_Threshold, 0x8
 			
 	#End constant settings
+	
+	.section .data
+	.align 2
+	
+		CharReg: .word 0x0
+		SpaceReg: .word 0x0
+		
 
 	.section .text
 	.global _start
@@ -28,15 +36,15 @@ _start:
 		#Init Lego related
 		#Resets all motors
 		#Sets up threshold for sensor and puts into statemode
-		#Hardcoded for sensor0
-		#Note: State mode not in interrupt mode
+		#Hardcoded for sensor0 as read, sensor2 as timing via interrupt
 		movia r4, Sensor_Threshold
-		call _LegoInit
+		movia r5, Timing_Sensor_Threshold
+		call LegoInit
 		
-		#Init Timer 1 with interrupt
-		#Note that enabling of PIE and clt3 is done inside
-		movia r4, Interrupt_Cycles
-		call _TIMER1InterruptInit
+		#			#Init Timer 1 with interrupt
+		#			#Note that enabling of PIE and clt3 is done inside
+		#			movia r4, Interrupt_Cycles
+		#			call Timer1InterruptInit
 		
 	#End init
 		
@@ -47,15 +55,15 @@ _Main_Loop:
 	#Motor PWM
 	
 		movia r4, Direction
-		call _MotorOn
+		call MotorOn
 		
 		movia r4, Duty_On_Cycles
-		call _TIMER2Delay
+		call Timer2Delay
 		
-		call _MotorOff
+		call MotorOff
 		
 		movia r4, Duty_Off_Cycles
-		call _TIMER2Delay
+		call Timer2Delay
 		
 	#End motor PWM
 	
